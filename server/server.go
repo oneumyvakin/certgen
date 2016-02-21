@@ -1,3 +1,4 @@
+// Package server wraps http.ListenAndServeTLS such that it generates self signed certificates on the fly automatically
 package server
 
 import (

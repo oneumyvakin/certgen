@@ -3,6 +3,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+// Package certgen provides high level functionality to generate X509 certificate pairs to use with TLS.
 package certgen
 
 import (
