@@ -27,9 +27,13 @@ import (
 type ECDSACurve int
 
 const (
+	// P224 to select the P-224 (FIPS 186-3, section D.2.2) elliptic curve
 	P224 ECDSACurve = iota
+	// P256 to select the P-256 (FIPS 186-3, section D.2.3) elliptic curve
 	P256
+	// P384 to select the P-384 (FIPS 186-3, section D.2.4) elliptic curve
 	P384
+	// P521 to select the P-521 (FIPS 186-3, section D.2.5) elliptic curve
 	P521
 )
 
@@ -48,6 +52,7 @@ func (e ECDSACurve) String() string {
 	}
 }
 
+// ECDSACurveFromString maps from a string to the ECDSACurve constant or returns an error
 func ECDSACurveFromString(s string) (ECDSACurve, error) {
 	switch s {
 	case "P224":
@@ -57,13 +62,13 @@ func ECDSACurveFromString(s string) (ECDSACurve, error) {
 	case "P384":
 		return P384, nil
 	case "P521":
-
 		return P521, nil
 	default:
 		return P224, fmt.Errorf("Invalid or Not supported ECDSA Curve")
 	}
 }
 
+// CertParams collects all the parameters for generaeting a X509 Certifice
 type CertParams struct {
 	Hosts      string
 	ValidFrom  time.Time
@@ -74,9 +79,10 @@ type CertParams struct {
 	EcdsaCurve ECDSACurve
 }
 
+// NewDefaultParams returns params to generate a certificate with: RSA2048, Valid from now, valid for one year
 func NewDefaultParams() *CertParams {
 	cp := &CertParams{}
-	cp.Hosts = ""
+	cp.Hosts = "localhost"
 	cp.ValidFrom = time.Now()
 	cp.ValidFor = 365 * 24 * time.Hour
 	cp.Rsa = true
@@ -177,6 +183,7 @@ func genCertPair(cp *CertParams) (interface{}, []byte, error) {
 	return priv, derBytes, nil
 }
 
+// GenerateToMemory generates a certificate as []byte from the params.
 func GenerateToMemory(cp *CertParams) (cert []byte, key []byte, err error) {
 	priv, derBytes, err := genCertPair(cp)
 
@@ -189,6 +196,7 @@ func GenerateToMemory(cp *CertParams) (cert []byte, key []byte, err error) {
 	return
 }
 
+// GenerateToFile generates a ceritificate and writes it to files
 func GenerateToFile(cp *CertParams, certFile string, keyFile string) error {
 	priv, derBytes, err := genCertPair(cp)
 
@@ -197,7 +205,7 @@ func GenerateToFile(cp *CertParams, certFile string, keyFile string) error {
 	}
 	certOut, err := os.Create(certFile)
 	if err != nil {
-		fmt.Errorf("failed to open %s for writing: %s", certFile, err)
+		return fmt.Errorf("failed to open %s for writing: %s", certFile, err)
 	}
 	defer certOut.Close()
 	pem.Encode(certOut, &pem.Block{Type: "CERTIFICATE", Bytes: derBytes})
@@ -215,6 +223,7 @@ func GenerateToFile(cp *CertParams, certFile string, keyFile string) error {
 	return nil
 }
 
+// GenerateToWriter generates a certificate and writes then to the 2 given Writers.
 func GenerateToWriter(cp *CertParams, certWriter io.Writer, keyWriter io.Writer) error {
 	priv, derBytes, err := genCertPair(cp)
 
