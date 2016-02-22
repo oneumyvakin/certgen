@@ -9,7 +9,12 @@ import (
 )
 
 // ListenAndServeTLS creates a new server like http.ListenAndServeTLS but creates a self-signed certificate on the fly.
-// Warning: Since it's not a trusted certificate chain, the golang http-server will log http2: server: error reading preface... when connecting to the server.
+// Warning: Since it's not a trusted certificate chain, the golang http-server will log
+//
+//     http2: server: error reading preface...
+//
+// when connecting to the server.
+//
 // If p is nil the Default Parameters (RSA2048, Valid from now for 365 days) will be used for the certificate generation
 func ListenAndServeTLS(addr string, handler http.Handler, p *certgen.CertParams) error {
 	srv := &http.Server{Addr: addr, Handler: handler}
