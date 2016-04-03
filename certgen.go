@@ -83,7 +83,7 @@ type CertParams struct {
 // NewDefaultParams returns params to generate a certificate with: RSA2048, Valid from now, valid for one year
 func NewDefaultParams() *CertParams {
 	cp := &CertParams{}
-	cp.Hosts = "localhost"
+	cp.Hosts = "localhost,localhost:443,localhost:8080"
 	cp.ValidFrom = time.Now()
 	cp.ValidFor = 365 * 24 * time.Hour
 	cp.Rsa = true
