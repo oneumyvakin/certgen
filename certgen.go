@@ -210,7 +210,6 @@ func GenerateToFile(cp *CertParams, certFile string, keyFile string) error {
 	}
 	defer certOut.Close()
 	pem.Encode(certOut, &pem.Block{Type: "CERTIFICATE", Bytes: derBytes})
-	log.Printf("written %s\n", certFile)
 
 	keyOut, err := os.OpenFile(keyFile, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0600)
 	if err != nil {
@@ -219,7 +218,6 @@ func GenerateToFile(cp *CertParams, certFile string, keyFile string) error {
 
 	defer keyOut.Close()
 	pem.Encode(keyOut, pemBlockForKey(priv))
-	log.Printf("written %s\n", keyFile)
 
 	return nil
 }
